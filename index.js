@@ -12,63 +12,70 @@ addEventListener("fetch", (event) => {
  * @param {Request} request
  */
 async function handleRequest(request) {
-   const url = 'https://cfw-takehome.developers.workers.dev/api/variants'
-   const response = await fetch(url);
-   const jsonResponse = await parseJSON(response)
-  
-   let rand = Math.random() //returns a number between 0 or 1
-   let variant = 0
-   if (rand <= 0.5) variant = 0
-   else variant = 1
-   console.log(jsonResponse[variant], variant, 'hello')
-   let page = await fetch(jsonResponse[variant])
+  let cookie = request.headers.get("cookie");
+  const jsonResponse = await getResponse(
+    "https://cfw-takehome.developers.workers.dev/api/variants"
+  );
 
-  
-   return new HTMLRewriter()
-   .on('*', new ElementHandler(variant))
-   .transform(page);
+  let variNum = await getVariant(cookie);
+  const page = await fetch(jsonResponse[variNum]);
+  const newPage = new HTMLRewriter()
+    .on("*", new ElementHandler(variNum))
+    .transform(page);
+  newPage.headers.set('Set-Cookie', variNum)
+  return newPage
 }
 
-async function getRand() {
-  //randomize variant for right now
-  let rand = Math.random() //returns a number between 0 or 1
-  let variant = 0
-  if (rand <= 0.5) variant = 0
-  else variant = 1
-  return variant
+async function getResponse(url) {
+  const response = await fetch(url);
+  return await parseJSON(response);
+}
+
+async function getVariant(cookieVal) {
+  console.log('in method:',cookieVal)
+  if (cookieVal == '0' || cookieVal == '1') {
+    return cookieVal;
+  }
+  else {
+    //randomize variant for right now
+    let rand = Math.random(); //returns a number between 0 or 1
+    if (rand <= 0.5) cookieVal = 0;
+    else cookieVal = 1;
+    return cookieVal;
+  }
 }
 
 async function parseJSON(jsonResponse) {
-  const response = JSON.stringify(await jsonResponse.json())
-  let variants = JSON.parse(response).variants
-  return variants
+  const response = JSON.stringify(await jsonResponse.json());
+  let variants = JSON.parse(response).variants;
+  return variants;
 }
 
 class ElementHandler {
   constructor(v) {
-    this.variant = v
+    this.variant = v;
   }
   element(element) {
-    if (element.tagName === 'title') {
+    if (element.tagName === "title") {
       element.setInnerContent(`Jennifer Carballo's Cloudflare Application`);
-    }
-    else if (element.tagName === 'h1') {
-      element.prepend("This is ")
-      element.append("!")
-    }
-    else if (element.tagName === 'p') {
-      if(this.variant == 0)
-        element.setInnerContent(`I'll implement cookies in a bit. So the variant is just random rn Variant 2 has a link to my Github!`);
-      else 
-        element.setInnerContent(`I'll implement cookies in a bit. So the variant is just random rn Variant 1 has a link to my Linkedin!`);
-    }
-    else if (element.tagName === 'a') {
+    } else if (element.tagName === "h1") {
+      element.prepend("This is ");
+      element.append("!");
+    } else if (element.tagName === "p") {
+      if (this.variant == 0)
+        element.setInnerContent(
+          `What an interesting assignment, I learned a lot. Variant 2 has a link to my Github, clear cookies to access it!`
+        );
+      else
+        element.setInnerContent(
+          `What an interesting assignment, I learned a lot. Variant 1 has a link to my Linkedin, clear cookies to access it!`
+        );
+    } else if (element.tagName === "a") {
       if (this.variant == 0) {
-        element.setAttribute("href", "htt/ps://www.linkedin.com/in/jennifer-carballo/")
+        element.setAttribute("href","https://www.linkedin.com/in/jennifer-carballo/");
         element.setInnerContent(`Jennifer Carballo's Linkedin`);
-      }
-      else {
-        element.setAttribute("href", "https://github.com/jcarballo1")
+      } else {
+        element.setAttribute("href", "https://github.com/jcarballo1");
         element.setInnerContent(`Jennifer Carballo's Github`);
       }
     }
