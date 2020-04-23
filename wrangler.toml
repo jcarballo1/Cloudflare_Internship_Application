@@ -1,6 +1,6 @@
-name = "cloudflare_internship_application_jennifercarballo"
+name = "jcarballo"
 type = "javascript"
-account_id = ""
+account_id = "a430a6572d83269f86ba49fc90d2012f"
 workers_dev = true
 route = ""
 zone_id = ""

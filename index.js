@@ -23,8 +23,13 @@ async function handleRequest(request) {
   const page = new HTMLRewriter() //uses Element handler class to add customizations
     .on("*", new ElementHandler(variNum))
     .transform(variantUrl); //passes in url of selected variant
-  page.headers.set('Set-Cookie', variNum) //sets cookie to variant value
-  return page //returns the page of the generated variant
+  //page.headers.set('Set-Cookie', variNum) //sets cookie to variant value
+  return new Response(page, {
+    headers: {
+      'Content-Type': 'text/html',
+      'Set-Cookie' :`variant=${variNum}`
+    }
+  }) //returns the page of the generated variant
 }
 
 /**
@@ -42,9 +47,12 @@ async function getResponse(url) {
  * randomly assign 0 or 1
  */
 async function getVariant(cookieVal) {
-  if (cookieVal == '0' || cookieVal == '1') { //checks if one is set
-    return cookieVal;
+  if (cookieVal.includes(0)) { //checks if one is set
+    return 0;
   }
+  else if (cookieVal.includes(1)) {
+    return 1;
+  } 
   else {
     //randomize variant if there is not one set
     let rand = Math.random(); //returns a number between 0 or 1
