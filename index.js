@@ -12,8 +12,8 @@ addEventListener("fetch", (event) => {
  * @param {Request} request
  */
 async function handleRequest(request) {
-  const url = 'https://cfw-takehome.developers.workers.dev/api/variants'
-  const response = await fetch(url);
+   const url = 'https://cfw-takehome.developers.workers.dev/api/variants'
+   const response = await fetch(url);
    const jsonResponse = await parseJSON(response)
   
    let rand = Math.random() //returns a number between 0 or 1
@@ -23,8 +23,9 @@ async function handleRequest(request) {
    console.log(jsonResponse[variant], variant, 'hello')
    let page = await fetch(jsonResponse[variant])
 
+  
    return new HTMLRewriter()
-   .on('*', new ElementHandler())
+   .on('*', new ElementHandler(variant))
    .transform(page);
 }
 
@@ -44,20 +45,32 @@ async function parseJSON(jsonResponse) {
 }
 
 class ElementHandler {
+  constructor(v) {
+    this.variant = v
+  }
   element(element) {
     if (element.tagName === 'title') {
-      element.setInnerContent(`this is the title`);
+      element.setInnerContent(`Jennifer Carballo's Cloudflare Application`);
     }
     else if (element.tagName === 'h1') {
       element.prepend("This is ")
       element.append("!")
     }
     else if (element.tagName === 'p') {
-      element.setInnerContent(`I'll implement cookies in a bit. So the variant is just random rn`);
+      if(this.variant == 0)
+        element.setInnerContent(`I'll implement cookies in a bit. So the variant is just random rn Variant 2 has a link to my Github!`);
+      else 
+        element.setInnerContent(`I'll implement cookies in a bit. So the variant is just random rn Variant 1 has a link to my Linkedin!`);
     }
-    else if (element.tagName === 'a' && (element.getAttribute('id') == "url")) {
-      element.setAttribute("href", "")
-      element.setInnerContent(``);
+    else if (element.tagName === 'a') {
+      if (this.variant == 0) {
+        element.setAttribute("href", "htt/ps://www.linkedin.com/in/jennifer-carballo/")
+        element.setInnerContent(`Jennifer Carballo's Linkedin`);
+      }
+      else {
+        element.setAttribute("href", "https://github.com/jcarballo1")
+        element.setInnerContent(`Jennifer Carballo's Github`);
+      }
     }
   }
 }
