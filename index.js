@@ -27,7 +27,7 @@ async function handleRequest(request) {
     page.headers.set('Set-Cookie', `variant=${variNum}`) //sets cookie to variant value
     return page
   } catch (e) { //catches an error, and returns error message instead of vague worker error
-    return new Response("Something didn't work, refresh the page!\n" + e)
+    return new Response("Something didn't work.\n" + e)
   }
 }
 
