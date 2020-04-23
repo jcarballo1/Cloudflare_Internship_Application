@@ -2,6 +2,7 @@
 
 Thank you for this opportunity!
 This project is deployed at: https://jcarballo.fullstackapplication.workers.dev/
+NOTE: the project name is different from teh prefix of the url!!!
 
 (I don't own a domain so I had to skip the last extra credit part)
 
