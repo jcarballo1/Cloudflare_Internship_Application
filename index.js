@@ -13,18 +13,22 @@ addEventListener("fetch", (event) => {
  * @param {Request} request
  */
 async function handleRequest(request) {
-  let cookie = request.headers.get("cookie"); //gets value for cookie whether it's set or not
-  const urls = await getResponse( 
-    "https://cfw-takehome.developers.workers.dev/api/variants"
-  ); //stores array of varients in jsonResponse
+  try {
+    let cookie = request.headers.get("cookie"); //gets value for cookie whether it's set or not
+    const urls = await getResponse(
+      "https://cfw-takehome.developers.workers.dev/api/variants"
+    ); //stores array of varients in jsonResponse
 
-  let variNum = await getVariant(cookie); //gets variant number from header or from random
-  const variantUrl = await fetch(urls[variNum]); //gets url of selected variant
-  const page = new HTMLRewriter() //uses Element handler class to add customizations
-    .on("*", new ElementHandler(variNum))
-    .transform(variantUrl); //passes in url of selected variant
-  page.headers.set('Set-Cookie', `variant=${variNum}`) //sets cookie to variant value
-  return page //returns the page of the generated variant
+    let variNum = await getVariant(cookie); //gets variant number from header or from random
+    const variantUrl = await fetch(urls[variNum]); //gets url of selected variant
+    const page = new HTMLRewriter() //uses Element handler class to add customizations
+      .on("*", new ElementHandler(variNum))
+      .transform(variantUrl); //passes in url of selected variant
+    page.headers.set('Set-Cookie', `variant=${variNum}`) //sets cookie to variant value
+    return page
+  } catch (e) { //catches an error, and returns error message instead of vague worker error
+    return new Response("Something didn't work, refresh the page!\n" + e)
+  }
 }
 
 /**
@@ -43,14 +47,14 @@ async function getResponse(url) {
  */
 async function getVariant(cookieVal) {
   console.log(cookieVal)
-  if (cookieVal.includes('0')) { //checks if one is set
+  if (cookieVal && cookieVal.includes('0')) { //checks if one is set and is not null
     console.log("return 0")
     return 0;
   }
-  else if (cookieVal.includes('1')) {
+  else if (cookieVal && cookieVal.includes('1')) { //same here
     console.log("return 1")
     return 1;
-  } 
+  }
   else {
     //randomize variant if there is not one set
     let rand = Math.random(); //returns a number between 0 or 1
