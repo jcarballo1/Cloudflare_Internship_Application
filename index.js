@@ -81,11 +81,11 @@ class ElementHandler {
     } else if (element.tagName === "p") { //description under title; varies with variant
       if (this.variant == 0)
         element.setInnerContent( //content for Variant 1
-          `What an interesting assignment, I learned a lot. Variant 2 has a link to my Github, clear cookies to access it! Check out my resume below :)`
+          `What a fun project, I learned a lot. Variant 2 has a link to my Github, clear cookies to access it! Check out my resume below :)`
         );
       else
         element.setInnerContent( //content for Variant 2
-          `What an interesting assignment, I learned a lot. Variant 1 has a link to my Linkedin, clear cookies to access it! Check out my previous projects below :)`
+          `What a fun assignment, I learned a lot. Variant 1 has a link to my Linkedin, clear cookies to access it! Check out my previous projects below :)`
         );
     } else if (element.tagName === "a") { //link set on button; varies with variant
       if (this.variant == 0) {
