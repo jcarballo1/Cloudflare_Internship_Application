@@ -3,7 +3,7 @@
 Thank you for this opportunity!
 This project is deployed at: https://jcarballo.fullstackapplication.workers.dev/
 
-* I don't own a domain so I had to skip the last extra credit part
+(I don't own a domain so I had to skip the last extra credit part)
 
 ## What is it?
 
